@@ -33,17 +33,20 @@ iris_train_labels <- trainData$Species
 iris_test_labels <- testData$Species
 
 # User inputs method
-fun <- function(){
-    method <- readline(prompt="Enter a method: ")
+while(TRUE){
+    cat("Enter method: ");
+    method <- readLines("stdin",n=1);
     if(method == "knn"){
     #### KNN ####
     iris_test_pred1 <- knn(train = trainData1, test = testData1, cl= iris_train_labels,k = 3,prob=TRUE)
 
     CrossTable(x = iris_test_labels, y = iris_test_pred1,prop.chisq=FALSE)
+    break
     }else if(method == "rfs"){
     ### Random Forest ###
     iris_pred.rf <- rfsrc(Species~., data=trainData ,statistics=T,tree.err=T,proximity=T,importance=T)
     print(iris_pred.rf)
+    break
     }else if(method == "cart"){
     ### CART ###
     ii<-sample(seq(1,dim(iris)[1]),50)
@@ -53,11 +56,13 @@ fun <- function(){
     # plotting the full tree
     plot(tree1)
     text(tree1,cex=.75,digits=2)
+    break
     }else if(method == "multinom"){
     ### Multinomail model ###
     model <-multinom(Species~., data=trainData)
     pr<-predict(model, newdata = testData)
     confusionMatrix(data=pr, reference = testData$Species)
+    break
     }else if(method == "lda"){
     ### Discriminant analysis ###
     # https://rpubs.com/gokul108/19670
@@ -66,11 +71,13 @@ fun <- function(){
     # Confusion matrix: rows = actual, columns = classified into
     table( Actual=(actual<-iris$Species),
        Classified=(classified<-predict(irisLDA)$class) )
+    break
     }else if(method == "quad"){
     ### Quadratic ###
     ### Start Quadratic discriminant analysis (from MASS library)
     qda(Species ~ ., data=iris) -> irisQDA
     # Confusion matrix: rows = actual, columns = classified into
     table(actual<-iris$Species, classified<-predict(irisQDA)$class)
+    break
     }
 }
